@@ -25,6 +25,15 @@ function createGallery(galleryItems) {
 
 function handleClick(event) {
     event.preventDefault();
-    
-    console.log(event.target.dataset.source);
+
+    if (event.target.nodeName != 'IMG') {
+        return;
+    };
+
+    basicLightbox.create(`
+	    <img
+            src="${event.target.dataset.source}"
+            alt="${event.target.attributes.getNamedItem('alt').value}"
+        />
+    `).show();
 }
