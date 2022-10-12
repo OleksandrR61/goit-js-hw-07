@@ -4,7 +4,6 @@ import { galleryItems } from './gallery-items.js';
 console.log(galleryItems);
 
 const galleryRef = document.querySelector(".gallery");
-let imgModal;
 
 galleryRef.insertAdjacentHTML("beforeend", createGallery(galleryItems));
 galleryRef.addEventListener('click', handleClick);
@@ -31,27 +30,29 @@ function handleClick(event) {
         return;
     };
     
-    imgModal = basicLightbox.create(`
+    const imgModal = basicLightbox.create(`
 	    <img
             src="${event.target.dataset.source}"
             alt="${event.target.attributes.getNamedItem('alt').value}"
         />
     `,
         {
-            onShow: (imgModal) => {
-                window.addEventListener('keydown', handleKeydownEsc)
+            onShow: () => {
+                window.addEventListener('keydown', handleKeydownListener)
             },
-            onClose: (imgModal) => {
-                window.removeEventListener('keydown', handleKeydownEsc)
+
+            onClose: () => {
+                window.removeEventListener('keydown', handleKeydownListener)
             }
         }
     );
 
+    const handleKeydownListener = handleKeydownEsc.bind(null, imgModal);
+    
     imgModal.show();
 }
 
-function handleKeydownEsc(event) {
-    console.log(event.code);
+function handleKeydownEsc(imgModal, event) {
     if (event.code === 'Escape') {
         imgModal.close();
     };
