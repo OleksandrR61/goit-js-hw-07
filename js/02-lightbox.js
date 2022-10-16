@@ -11,26 +11,6 @@ function createGallery(galleryItems) {
     }).join('');
 }
 
-function createImgModal() {
-    return new SimpleLightbox('.gallery a', {captionsData: "alt", captionDelay: 250});
-}
+document.querySelector(".gallery").insertAdjacentHTML("beforeend", createGallery(galleryItems));
 
-function handleClick(event) {
-    event.preventDefault();
-
-    if (event.target.nodeName != 'IMG') {
-        return;
-    };
-    
-    let imgModal = createImgModal();
-
-    imgModal.open(event.target.parentNode);
-    imgModal.on('closed.simplelightbox', function () {
-	    imgModal.destroy();
-    });
-}
-
-const galleryRef = document.querySelector(".gallery");
-
-galleryRef.insertAdjacentHTML("beforeend", createGallery(galleryItems));
-galleryRef.addEventListener('click', handleClick);
+new SimpleLightbox('.gallery a', { captionsData: "alt", captionDelay: 250 });
