@@ -3,11 +3,6 @@ import { galleryItems } from './gallery-items.js';
 
 console.log(galleryItems);
 
-const galleryRef = document.querySelector(".gallery");
-
-galleryRef.insertAdjacentHTML("beforeend", createGallery(galleryItems));
-galleryRef.addEventListener('click', handleClick);
-
 function createGallery(galleryItems) {
     return galleryItems.map(item => {
         return `<div class="gallery__item">
@@ -23,17 +18,11 @@ function createGallery(galleryItems) {
     }).join('');
 }
 
-function handleClick(event) {
-    event.preventDefault();
-
-    if (event.target.nodeName != 'IMG') {
-        return;
-    };
-    
+function createImgModal({ target }) {
     const imgModal = basicLightbox.create(`
 	    <img
-            src="${event.target.dataset.source}"
-            alt="${event.target.attributes.getNamedItem('alt').value}"
+            src="${target.dataset.source}"
+            alt="${target.attributes.getNamedItem('alt').value}"
         />
     `,
         {
@@ -48,12 +37,29 @@ function handleClick(event) {
     );
 
     const handleKeydownListener = handleKeydownEsc.bind(null, imgModal);
+
+    return imgModal;
+}
+
+function handleClick(event) {
+    event.preventDefault();
+
+    if (event.target.nodeName != 'IMG') {
+        return;
+    };
+    
+    const imgModal = createImgModal(event);
     
     imgModal.show();
 }
 
-function handleKeydownEsc(imgModal, event) {
-    if (event.code === 'Escape') {
+function handleKeydownEsc(imgModal, { code }) {
+    if (code === 'Escape') {
         imgModal.close();
     };
 }
+
+const galleryRef = document.querySelector(".gallery");
+
+galleryRef.insertAdjacentHTML("beforeend", createGallery(galleryItems));
+galleryRef.addEventListener('click', handleClick);
